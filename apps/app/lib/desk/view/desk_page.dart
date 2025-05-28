@@ -10,10 +10,13 @@ class DeskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DeskBloc(
-        frappe: context.read<FrappeClient>(),
-        secureStorage: context.read<SecureStorage>(),
-      ),
+      create: (context) =>
+          DeskBloc(
+              frappe: context.read<FrappeClient>(),
+              secureStorage: context.read<SecureStorage>(),
+            )
+            ..add(LoadUserDataEvent())
+            ..add(LoadWorkspacesEvent()),
       child: const DeskView(),
     );
   }

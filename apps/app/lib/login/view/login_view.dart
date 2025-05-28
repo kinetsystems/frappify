@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frappify/app_config/app_config.dart';
 import 'package:frappify/desk/desk.dart';
 import 'package:frappify/login/login.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -141,6 +142,27 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: ShadButton.outline(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const AppConfigPage();
+                      },
+                    ),
+                  );
+                },
+                child: Icon(
+                  size: 25,
+                  color: ShadTheme.of(context).colorScheme.foreground,
+                  HugeIcons.strokeRoundedSettings02,
+                ),
               ),
             ),
           ],

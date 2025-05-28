@@ -21,6 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_spinkit: ^5.2.1
+  flutter_svg: ^2.1.0
   frappe_client:
     path: ../../packages/frappe_client
   hive: ^2.2.3
@@ -51,3 +52,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/images/
