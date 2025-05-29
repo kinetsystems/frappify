@@ -1,14 +1,14 @@
 # melos_managed_dependency_overrides: app_logger,app_ui,frappe_client,persistent_storage,secure_storage,storage
 dependency_overrides:
   app_logger:
-    path: ..\\..\\packages\\app_logger
+    path: ../../packages/app_logger
   app_ui:
-    path: ..\\..\\packages\\app_ui
+    path: ../../packages/app_ui
   frappe_client:
-    path: ..\\..\\packages\\frappe_client
+    path: ../../packages/frappe_client
   persistent_storage:
-    path: ..\\..\\packages\\persistent_storage
+    path: ../../packages/persistent_storage
   secure_storage:
-    path: ..\\..\\packages\\secure_storage
+    path: ../../packages/secure_storage
   storage:
-    path: ..\\..\\packages\\storage
+    path: ../../packages/storage

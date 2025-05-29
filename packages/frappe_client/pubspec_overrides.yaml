@@ -1,4 +1,4 @@
 # melos_managed_dependency_overrides: app_logger
 dependency_overrides:
   app_logger:
-    path: ..\\app_logger
+    path: ../app_logger

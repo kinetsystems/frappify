@@ -18,6 +18,7 @@ class _DeskViewState extends State<DeskView> {
   final helpPopoverController = ShadPopoverController();
   final profilePopoverController = ShadPopoverController();
   int _selectedIndex = 0;
+  bool _isSidebarOpen = true;
 
   @override
   void initState() {
@@ -376,168 +377,192 @@ class _DeskViewState extends State<DeskView> {
                   ],
                 )
               : null,
-          body: Row(
+          body: Column(
             children: [
-              if (responsive.isDesktop)
-                Container(
-                  width: 240,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(color: theme.colorScheme.border),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              if (state.currentWorkspace != null)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text('Workspace', style: theme.textTheme.h4),
+                      ShadButton.ghost(
+                        onPressed: () {
+                          setState(() {
+                            _isSidebarOpen = !_isSidebarOpen;
+                          });
+                        },
+                        child: Icon(Icons.menu),
                       ),
-                      if (state.workspaces != null)
-                        ...state.workspaces!.map(
-                          (workspace) => ShadButton.ghost(
-                            onPressed: () {
-                              context.read<DeskBloc>().add(
-                                LoadWorkspaceEvent(
-                                  workspaceId: workspace.name!,
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.dashboard_outlined,
-                                  size: 16,
-                                  color: theme.colorScheme.foreground,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  workspace.label!,
-                                  style: theme.textTheme.small,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      Text(state.currentWorkspace!, style: theme.textTheme.h4),
                     ],
                   ),
                 ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (state.currentWorkspace != null) ...[
-                        Text(
-                          state.currentWorkspace!,
-                          style: theme.textTheme.h2,
+
+              Row(
+                children: [
+                  if (responsive.isDesktop)
+                    Container(
+                      width: 240,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: theme.colorScheme.border),
                         ),
-                        const SizedBox(height: 24),
-                      ],
-                      if (state.workspace?.shortcuts?.items != null)
-                        if (state.workspace?.shortcuts?.items?.isNotEmpty ==
-                            true) ...[
-                          Text('Your Shortcuts', style: theme.textTheme.h3),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: (state.workspace?.shortcuts?.items ?? [])
-                                .map(
-                                  (shortcut) => ShadCard(
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.star_outline,
-                                              color: theme.colorScheme.primary,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              shortcut.label!,
-                                              style: theme.textTheme.small,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.workspaces != null && _isSidebarOpen)
+                            ...state.workspaces!.map(
+                              (workspace) => ShadButton.ghost(
+                                onPressed: () {
+                                  context.read<DeskBloc>().add(
+                                    LoadWorkspaceEvent(
+                                      workspaceId: workspace.name!,
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.dashboard_outlined,
+                                      size: 16,
+                                      color: theme.colorScheme.foreground,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      workspace.label!,
+                                      style: theme.textTheme.small,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                         ],
-                      if (state.workspace?.cards?.items != null)
-                        if (state.workspace?.cards?.items?.isNotEmpty ==
-                            true) ...[
-                          const SizedBox(height: 32),
-                          Text('Reports & Masters', style: theme.textTheme.h3),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: (state.workspace?.cards?.items ?? [])
-                                .map(
-                                  (card) => ShadCard(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            card.label!,
-                                            style: theme.textTheme.h4,
-                                          ),
-                                          const SizedBox(height: 12),
-                                          ...(card.links ?? []).map(
-                                            (link) => InkWell(
+                      ),
+                    ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.workspace?.shortcuts?.items != null)
+                            if (state.workspace?.shortcuts?.items?.isNotEmpty ==
+                                true) ...[
+                              Text('Your Shortcuts', style: theme.textTheme.h3),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                spacing: 16,
+                                runSpacing: 16,
+                                children:
+                                    (state.workspace?.shortcuts?.items ?? [])
+                                        .map(
+                                          (shortcut) => ShadCard(
+                                            child: InkWell(
                                               onTap: () {},
                                               child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 8,
+                                                padding: const EdgeInsets.all(
+                                                  16,
                                                 ),
                                                 child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     Icon(
-                                                      Icons.link,
-                                                      size: 16,
+                                                      Icons.star_outline,
                                                       color: theme
                                                           .colorScheme
-                                                          .mutedForeground,
+                                                          .primary,
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
-                                                      link.label!,
-                                                      style: theme
-                                                          .textTheme
-                                                          .small
-                                                          .copyWith(
-                                                            color: theme
-                                                                .colorScheme
-                                                                .mutedForeground,
-                                                          ),
+                                                      shortcut.label!,
+                                                      style:
+                                                          theme.textTheme.small,
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
+                                        )
+                                        .toList(),
+                              ),
+                            ],
+                          if (state.workspace?.cards?.items != null)
+                            if (state.workspace?.cards?.items?.isNotEmpty ==
+                                true) ...[
+                              const SizedBox(height: 32),
+                              Text(
+                                'Reports & Masters',
+                                style: theme.textTheme.h3,
+                              ),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                spacing: 16,
+                                runSpacing: 16,
+                                children: (state.workspace?.cards?.items ?? [])
+                                    .map(
+                                      (card) => ShadCard(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                card.label!,
+                                                style: theme.textTheme.h4,
+                                              ),
+                                              const SizedBox(height: 12),
+                                              ...(card.links ?? []).map(
+                                                (link) => InkWell(
+                                                  onTap: () {},
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          bottom: 8,
+                                                        ),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.link,
+                                                          size: 16,
+                                                          color: theme
+                                                              .colorScheme
+                                                              .mutedForeground,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Text(
+                                                          link.label!,
+                                                          style: theme
+                                                              .textTheme
+                                                              .small
+                                                              .copyWith(
+                                                                color: theme
+                                                                    .colorScheme
+                                                                    .mutedForeground,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
+                                    )
+                                    .toList(),
+                              ),
+                            ],
                         ],
-                    ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

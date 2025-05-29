@@ -15,8 +15,7 @@ part 'app_start_state.dart';
 
 class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
   AppStartBloc({required this.secureStorage, required this.frappe})
-    : super(const AppStartState()) {
-    //
+    : super(AppStartState.initial()) {
     on<StartCookieCheckUpEvent>(_onStartCookieCheckUp);
     on<StopCookieCheckUpEvent>(_onStopCookieCheckUp);
     on<ExpiredLogoutEvent>(_onLogout);
@@ -41,7 +40,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
     final cookie = frappe.cookie;
 
     if (cookie == null || cookie.isEmpty) {
-      emit(state.copyWith(isCookieTimedOut: true));
+      emit(state.copyWith(isLoggedIn: false, isCookieTimedOut: false));
       return;
     }
 
@@ -59,7 +58,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
           emit(
             state.copyWith(
               isCookieTimedOut: true,
-              //todo locale
+              isLoggedIn: false,
               message: 'Your session has expired.',
             ),
           );
@@ -69,7 +68,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
             emit(
               state.copyWith(
                 isCookieTimedOut: false,
-                //todo locale
+                isLoggedIn: true,
                 message:
                     'Your session will in. ${formatDuration(diff.inSeconds)}',
                 time: diff.inSeconds,
@@ -78,7 +77,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
           }
         }
       } catch (e) {
-        emit(state.copyWith(isCookieTimedOut: true));
+        emit(state.copyWith(isLoggedIn: false, isCookieTimedOut: false));
       }
     }
   }
@@ -91,6 +90,8 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
     await secureStorage.delete(key: 'cookie');
     await secureStorage.delete(key: 'username');
     await secureStorage.delete(key: 'userId');
+
+    emit(state.copyWith(isLoggedIn: false, isCookieTimedOut: false));
 
     await event.navigatorKey.currentState?.pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginPage()),

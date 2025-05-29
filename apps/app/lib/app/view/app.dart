@@ -60,12 +60,12 @@ class App extends StatelessWidget {
                 return ToastificationWrapper(
                   child: BlocListener<AppStartBloc, AppStartState>(
                     listener: (context, state) {
-                      if (state.isCookieTimedOut) {
+                      if (state.isCookieTimedOut && state.isLoggedIn) {
                         context.read<AppStartBloc>().add(
                           ExpiredLogoutEvent(navigatorKey),
                         );
                       }
-                      if (state.message != null) {
+                      if (state.message != null && state.isLoggedIn) {
                         ToastService.showWarningToast(message: state.message!);
                       }
                     },
