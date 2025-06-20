@@ -840,6 +840,10 @@ class _DeskViewState extends State<DeskView> {
                 key: ValueKey(state.currentWorkspace),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (state.workspace?.charts?.items?.isNotEmpty == true)
+                    _buildChartsSection(context, state, theme),
+                  if (state.numberCards?.isNotEmpty == true)
+                    _buildNumberCardsSection(context, state, theme),
                   if (state.workspace?.shortcuts?.items?.isNotEmpty == true)
                     _buildShortcutsSection(context, state, theme),
                   if (state.workspace?.cards?.items?.isNotEmpty == true)
@@ -879,6 +883,69 @@ class _DeskViewState extends State<DeskView> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildChartsSection(
+    BuildContext context,
+    DeskState state,
+    ShadThemeData theme,
+  ) {
+    return Container();
+  }
+
+  Widget _buildNumberCardsSection(
+    BuildContext context,
+    DeskState state,
+    ShadThemeData theme,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: (state.workspace?.numberCards?.items ?? [])
+              .asMap()
+              .entries
+              .map((entry) {
+                final index = entry.key;
+                final numberCard = entry.value;
+                final numberCardData = state.numberCards?[index];
+                return _buildNumberCardItem(
+                  numberCard.label ?? '',
+                  numberCardData?.message ?? 0.0,
+                  theme,
+                );
+              })
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNumberCardItem(
+    String title,
+    double amount,
+    ShadThemeData theme,
+  ) {
+    return ShadCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: theme.textTheme.h4,
+            ),
+            Text(
+              NumberFormat.decimalPattern().format(amount),
+              style: theme.textTheme.h4,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:frappe_client/frappe_client.dart';
 import 'package:frappe_dart/src/models/desk_sidebar_items_response/desk_page.dart';
 import 'package:frappe_dart/src/models/desktop_page_request.dart';
 import 'package:frappe_dart/src/models/desktop_page_response/message.dart';
+import 'package:frappe_dart/src/models/number_card_response.dart';
 import 'package:frappify/login/login.dart';
 import 'package:secure_storage/secure_storage.dart';
 
@@ -78,9 +79,27 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
       final workspace = await frappe.getDesktopPage(
         DesktopPageRequest(name: event.workspaceId),
       );
+
+      final numberCards = <NumberCardResponse>[];
+
+      if (workspace.message?.numberCards?.items?.isNotEmpty == true) {
+        for (
+          var i = 0;
+          i < (workspace.message?.numberCards?.items?.length ?? 0);
+          i++
+        ) {
+          final numberCard = workspace.message?.numberCards?.items?[i];
+          final numberCardValue = await frappe.getNumberCard(
+            numberCard?.label ?? '',
+          );
+          numberCards.add(numberCardValue);
+        }
+      }
+
       emit(
         state.copyWith(
           workspace: workspace.message,
+          numberCards: numberCards,
           currentWorkspace: event.workspaceId,
           isLoadingWorkspace: false,
         ),
