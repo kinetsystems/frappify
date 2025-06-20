@@ -72,6 +72,9 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
     Emitter<DeskState> emit,
   ) async {
     try {
+      // Set loading state to true
+      emit(state.copyWith(isLoadingWorkspace: true));
+
       final workspace = await frappe.getDesktopPage(
         DesktopPageRequest(name: event.workspaceId),
       );
@@ -79,9 +82,12 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
         state.copyWith(
           workspace: workspace.message,
           currentWorkspace: event.workspaceId,
+          isLoadingWorkspace: false,
         ),
       );
     } catch (e, stack) {
+      // Set loading state to false on error
+      emit(state.copyWith(isLoadingWorkspace: false));
       await AppLogger.reportError(e, stack, 'Failed to load workspace');
     }
   }
