@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.16
   intl: ^0.20.2
-  mockingjay: ^1.0.0
+  mockingjay: ^2.0.0
   shadcn_ui:
     git:
       url: https://github.com/nank1ro/flutter-shadcn-ui
