@@ -28,17 +28,25 @@ class _DeskViewState extends State<DeskView> {
   }
 
   void _expandParentWorkspaces(DeskState state, String workspaceName) {
-    // Find the parent workspace and expand it
-    final workspace = state.workspaces?.firstWhere(
-      (w) => w.name == workspaceName,
-      orElse: () => throw StateError('Workspace not found'),
-    );
+    // Find the workspace
+    final workspace = state.workspaces
+        ?.where(
+          (w) => w.name == workspaceName,
+        )
+        .firstOrNull;
 
-    if (workspace != null &&
-        workspace.parentPage != null &&
-        workspace.parentPage!.isNotEmpty) {
-      _expandedWorkspaces.add(workspace.parentPage!);
-      // Recursively expand parent's parent
+    // If workspace not found or has no parent, return
+    if (workspace == null ||
+        workspace.parentPage == null ||
+        workspace.parentPage!.isEmpty) {
+      return;
+    }
+
+    // Add parent to expanded set
+    _expandedWorkspaces.add(workspace.parentPage!);
+
+    // Recursively expand parent's parent (but avoid infinite loops)
+    if (workspace.parentPage != workspaceName) {
       _expandParentWorkspaces(state, workspace.parentPage!);
     }
   }
@@ -133,7 +141,7 @@ class _DeskViewState extends State<DeskView> {
       // Add workspace item
       items.add(
         Padding(
-          padding: EdgeInsets.only(left: level * 16),
+          padding: EdgeInsets.only(left: level * 20), // Increased indentation
           child: ListTile(
             leading: hasChildren
                 ? IconButton(
@@ -177,7 +185,9 @@ class _DeskViewState extends State<DeskView> {
 
           items.add(
             Padding(
-              padding: EdgeInsets.only(left: (level + 1) * 16),
+              padding: EdgeInsets.only(
+                left: (level + 1) * 20,
+              ), // Increased indentation
               child: ListTile(
                 leading: childHasChildren
                     ? IconButton(
@@ -215,7 +225,9 @@ class _DeskViewState extends State<DeskView> {
             for (final grandchild in childChildren) {
               items.add(
                 Padding(
-                  padding: EdgeInsets.only(left: (level + 2) * 16),
+                  padding: EdgeInsets.only(
+                    left: (level + 2) * 20,
+                  ), // Increased indentation
                   child: ListTile(
                     leading: const Icon(Icons.dashboard_outlined),
                     title: Text(grandchild.label ?? 'Unknown'),
@@ -300,7 +312,7 @@ class _DeskViewState extends State<DeskView> {
         onPressed: notificationsPopoverController.toggle,
         hoverBackgroundColor: Colors.transparent,
         child: Badge(
-          label: const Text('3'),
+          // label: const Text('3'),
           child: Icon(
             Icons.notifications_outlined,
             color: theme.colorScheme.foreground,
@@ -319,35 +331,43 @@ class _DeskViewState extends State<DeskView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             child: Text('Notifications', style: theme.textTheme.h4),
           ),
           const Divider(),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.primary.withValues(
-                    alpha: 0.1,
-                  ),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-                title: Text('Notification ${index + 1}'),
-                subtitle: Text('This is notification ${index + 1}'),
-                trailing: Text(
-                  '2m ago',
-                  style: theme.textTheme.small.copyWith(
-                    color: theme.colorScheme.foreground,
-                  ),
-                ),
-              );
-            },
+          const SizedBox(height: 50),
+          Center(
+            child: Text(
+              'No new notifications',
+              style: theme.textTheme.small,
+            ),
           ),
+          const SizedBox(height: 50),
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   itemCount: 3,
+          //   itemBuilder: (context, index) {
+          //     return ListTile(
+          //       leading: CircleAvatar(
+          //         backgroundColor: theme.colorScheme.primary.withValues(
+          //           alpha: 0.1,
+          //         ),
+          //         child: Icon(
+          //           Icons.notifications_outlined,
+          //           color: theme.colorScheme.primary,
+          //         ),
+          //       ),
+          //       title: Text('Notification ${index + 1}'),
+          //       subtitle: Text('This is notification ${index + 1}'),
+          //       trailing: Text(
+          //         '2m ago',
+          //         style: theme.textTheme.small.copyWith(
+          //           color: theme.colorScheme.foreground,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
@@ -376,7 +396,7 @@ class _DeskViewState extends State<DeskView> {
           children: [
             Text('Help', style: theme.textTheme.small),
             const SizedBox(width: 8),
-            Icon(Icons.arrow_downward, color: theme.colorScheme.foreground),
+            Icon(Icons.chevron_right, color: theme.colorScheme.foreground),
           ],
         ),
       ),
@@ -651,7 +671,8 @@ class _DeskViewState extends State<DeskView> {
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           margin: EdgeInsets.only(
-            left: 8 + (level * 16),
+            left:
+                8 + (level * 24), // Increased indentation for better hierarchy
             right: 8,
             top: 2,
             bottom: 2,
@@ -681,43 +702,6 @@ class _DeskViewState extends State<DeskView> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Indentation for child workspaces
-                if (level > 0) ...[
-                  SizedBox(width: (level - 1) * 16),
-                  Container(
-                    width: 2,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.border,
-                      borderRadius: BorderRadius.circular(1),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-
-                // Expand/collapse button for workspaces with children
-                if (hasChildren)
-                  ShadButton.ghost(
-                    onPressed: () {
-                      setState(() {
-                        if (isExpanded) {
-                          _expandedWorkspaces.remove(workspaceName);
-                        } else {
-                          _expandedWorkspaces.add(workspaceName!);
-                        }
-                      });
-                    },
-                    child: AnimatedRotation(
-                      turns: isExpanded ? 0.25 : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: Icon(
-                        Icons.chevron_right,
-                        size: 16,
-                        color: theme.colorScheme.foreground,
-                      ),
-                    ),
-                  ),
-
                 // Workspace icon
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
@@ -749,60 +733,74 @@ class _DeskViewState extends State<DeskView> {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (hasChildren && !isExpanded) ...[
-                        const SizedBox(width: 4),
-                        Container(
-                          width: 4,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.mutedForeground,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),
 
-                // Active indicator
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: isActive
-                      ? Row(
-                          key: const ValueKey('active'),
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(width: 8),
-                            Icon(
-                              Icons.check_circle,
-                              size: 14,
-                              color: theme.colorScheme.primary,
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(key: ValueKey('inactive')),
-                ),
+                // Expand/collapse button for workspaces with children
+                if (hasChildren)
+                  ShadButton.ghost(
+                    onPressed: () {
+                      setState(() {
+                        if (isExpanded) {
+                          _expandedWorkspaces.remove(workspaceName);
+                        } else {
+                          _expandedWorkspaces.add(workspaceName!);
+                        }
+                      });
+                    },
+                    child: AnimatedRotation(
+                      turns: isExpanded ? 0.25 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 16,
+                        color: theme.colorScheme.foreground,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
         ),
 
-        // Child workspaces
+        // Child workspaces with proper indentation and visual connectors
         if (hasChildren && isExpanded)
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             child: Column(
-              children: children.map((child) {
+              children: children.asMap().entries.map((entry) {
+                final index = entry.key;
+                final child = entry.value;
                 final childChildren = state.workspaces!
                     .where((w) => w.parentPage == child.name)
                     .toList();
-                return _buildWorkspaceItem(
-                  context,
-                  child,
-                  theme,
-                  state,
-                  childChildren,
-                  level + 1,
+                final isLastChild = index == children.length - 1;
+
+                return Column(
+                  children: [
+                    // Visual connector line for child items
+                    // if (!isLastChild)
+                    //   Container(
+                    //     margin: EdgeInsets.only(
+                    //       left: 8 + (level * 24) + 12, // Align with child items
+                    //     ),
+                    //     width: 2,
+                    //     height: 8,
+                    //     decoration: BoxDecoration(
+                    //       color: theme.colorScheme.border,
+                    //       borderRadius: BorderRadius.circular(1),
+                    //     ),
+                    //   ),
+                    _buildWorkspaceItem(
+                      context,
+                      child,
+                      theme,
+                      state,
+                      childChildren,
+                      level + 1,
+                    ),
+                  ],
                 );
               }).toList(),
             ),
