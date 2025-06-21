@@ -21,6 +21,7 @@ class _DeskViewState extends State<DeskView> {
   int _selectedIndex = 0;
   bool _isSidebarOpen = true;
   final Set<String> _expandedWorkspaces = <String>{};
+  var fullWidth = false;
 
   @override
   void initState() {
@@ -468,7 +469,12 @@ class _DeskViewState extends State<DeskView> {
           _buildProfileMenuItem('Session Defaults', () {}, theme),
           _buildProfileMenuItem('Reload', () {}, theme),
           _buildProfileMenuItem('Apps', () {}, theme),
-          _buildProfileMenuItem('Toggle Full Width', () {}, theme),
+          _buildProfileMenuItem('Toggle Full Width', () {
+            setState(() {
+              fullWidth = !fullWidth;
+              profilePopoverController.toggle();
+            });
+          }, theme),
           _buildProfileMenuItem(
             'Toggle Theme',
             () => _showThemeDialog(context),
@@ -565,8 +571,14 @@ class _DeskViewState extends State<DeskView> {
     ShadThemeData theme,
     ResponsiveBreakpointsData responsive,
   ) {
+    final responsive = ResponsiveBreakpoints.of(context);
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(
+        !fullWidth && !responsive.isMobile ? 100 : 0,
+        0,
+        !fullWidth && !responsive.isMobile ? 100 : 0,
+        0,
+      ),
       child: Row(
         children: [
           Builder(
@@ -583,7 +595,7 @@ class _DeskViewState extends State<DeskView> {
               child: Icon(Icons.menu, semanticLabel: 'Toggle menu'),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 5),
           if (state.currentWorkspace != null)
             Text(state.currentWorkspace!, style: theme.textTheme.h4)
           else
@@ -600,11 +612,20 @@ class _DeskViewState extends State<DeskView> {
     ResponsiveBreakpointsData responsive,
   ) {
     return Expanded(
-      child: Row(
-        children: [
-          if (responsive.isDesktop) _buildDesktopSidebar(context, state, theme),
-          Expanded(child: _buildContentArea(context, state, theme)),
-        ],
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          !fullWidth && !responsive.isMobile ? 100 : 0,
+          0,
+          !fullWidth && !responsive.isMobile ? 100 : 0,
+          0,
+        ),
+        child: Row(
+          children: [
+            if (responsive.isDesktop)
+              _buildDesktopSidebar(context, state, theme),
+            Expanded(child: _buildContentArea(context, state, theme)),
+          ],
+        ),
       ),
     );
   }
