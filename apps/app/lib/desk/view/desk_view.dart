@@ -71,13 +71,15 @@ class _DeskViewState extends State<DeskView> {
           drawer: !responsive.isDesktop
               ? _buildMobileDrawer(context, state, theme)
               : null,
-          body: Column(
-            children: [
-              _buildAppBar(context, state, theme, responsive),
-              if (state.currentWorkspace != null)
-                _buildWorkspaceHeader(context, state, theme, responsive),
-              _buildMainContent(context, state, theme, responsive),
-            ],
+          body: SafeArea(
+            child: Column(
+              children: [
+                _buildAppBar(context, state, theme, responsive),
+                if (state.currentWorkspace != null)
+                  _buildWorkspaceHeader(context, state, theme, responsive),
+                _buildMainContent(context, state, theme, responsive),
+              ],
+            ),
           ),
         );
       },
