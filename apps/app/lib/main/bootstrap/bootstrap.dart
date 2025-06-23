@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frappe_client/frappe_client.dart';
 import 'package:frappify/main/bootstrap/app_bloc_observer.dart';
+import 'package:frappify/utils/platform.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -90,6 +91,11 @@ Future<void> bootstrap(AppBuilder builder) async {
 
     final appWidget = await builder(frappe, persistentStorage, secureStorage);
 
-    runApp(DevicePreview(builder: (context) => appWidget));
+    runApp(
+      DevicePreview(
+        enabled: !kReleaseMode && !kIsAndroid,
+        builder: (context) => appWidget,
+      ),
+    );
   });
 }

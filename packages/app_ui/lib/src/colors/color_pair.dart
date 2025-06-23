@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class ColorPair {
@@ -17,7 +15,7 @@ class ColorPair {
     return themeMode == ThemeMode.dark
         ? dark
         : isSystemDark
-            ? dark
-            : light;
+        ? dark
+        : light;
   }
 }

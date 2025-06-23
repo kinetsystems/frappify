@@ -19,7 +19,7 @@ dependencies:
   shimmer: ^3.0.0
   vector_graphics: any
 dev_dependencies:
-  build_runner: ^2.4.14
+  build_runner: ^2.5.3
   flutter_gen_runner: ^5.8.0
   flutter_test:
     sdk: flutter

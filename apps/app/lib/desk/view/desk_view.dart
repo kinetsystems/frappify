@@ -112,8 +112,8 @@ class _DeskViewState extends State<DeskView> {
         else
           ...List.generate(
             10,
-            (index) => NavigationDrawerDestination(
-              icon: const Icon(Icons.dashboard_outlined),
+            (index) => const NavigationDrawerDestination(
+              icon: Icon(Icons.dashboard_outlined),
               label: Text('Loading...'),
             ),
           ),
@@ -130,7 +130,7 @@ class _DeskViewState extends State<DeskView> {
     final rootWorkspaces = state.workspaces!
         .where((w) => w.parentPage == '')
         .toList();
-    final List<Widget> items = [];
+    final items = <Widget>[];
 
     for (final workspace in rootWorkspaces) {
       final children = state.workspaces!
@@ -144,7 +144,8 @@ class _DeskViewState extends State<DeskView> {
         Padding(
           padding: EdgeInsets.only(left: level * 20), // Increased indentation
           child: ListTile(
-            leading: hasChildren
+            leading: const Icon(Icons.dashboard_outlined),
+            trailing: hasChildren
                 ? IconButton(
                     icon: AnimatedRotation(
                       turns: isExpanded ? 0.25 : 0,
@@ -161,7 +162,7 @@ class _DeskViewState extends State<DeskView> {
                       });
                     },
                   )
-                : const Icon(Icons.dashboard_outlined),
+                : null,
             title: Text(workspace.label ?? 'Unknown'),
             onTap: () {
               // Expand parent workspaces when selecting a workspace
@@ -574,9 +575,9 @@ class _DeskViewState extends State<DeskView> {
     final responsive = ResponsiveBreakpoints.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        !fullWidth && !responsive.isMobile ? 100 : 0,
+        !fullWidth && responsive.largerOrEqualTo(DESKTOP) ? 100 : 0,
         0,
-        !fullWidth && !responsive.isMobile ? 100 : 0,
+        !fullWidth && responsive.largerOrEqualTo(DESKTOP) ? 100 : 0,
         0,
       ),
       child: Row(
@@ -592,14 +593,14 @@ class _DeskViewState extends State<DeskView> {
                   Scaffold.of(context).openDrawer();
                 }
               },
-              child: Icon(Icons.menu, semanticLabel: 'Toggle menu'),
+              child: const Icon(Icons.menu, semanticLabel: 'Toggle menu'),
             ),
           ),
           const SizedBox(width: 5),
           if (state.currentWorkspace != null)
             Text(state.currentWorkspace!, style: theme.textTheme.h4)
           else
-            ShimmerContainer(width: 200, height: 24),
+            const ShimmerContainer(width: 200, height: 24),
         ],
       ),
     );
@@ -614,9 +615,9 @@ class _DeskViewState extends State<DeskView> {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          !fullWidth && !responsive.isMobile ? 100 : 0,
+          !fullWidth && responsive.largerOrEqualTo(DESKTOP) ? 100 : 0,
           0,
-          !fullWidth && !responsive.isMobile ? 100 : 0,
+          !fullWidth && responsive.largerOrEqualTo(DESKTOP) ? 100 : 0,
           0,
         ),
         child: Row(
@@ -831,12 +832,12 @@ class _DeskViewState extends State<DeskView> {
   }
 
   Widget _buildWorkspaceItemShimmer(ShadThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
           ShimmerContainer(width: 40, height: 40),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(child: ShimmerContainer(width: double.infinity, height: 40)),
         ],
       ),
@@ -879,26 +880,26 @@ class _DeskViewState extends State<DeskView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Shortcuts section shimmer
-        ShimmerContainer(width: 150, height: 24),
+        const ShimmerContainer(width: 150, height: 24),
         const SizedBox(height: 16),
         Wrap(
           spacing: 16,
           runSpacing: 16,
           children: List.generate(
             6,
-            (index) => ShimmerContainer(width: 120, height: 60),
+            (index) => const ShimmerContainer(width: 120, height: 60),
           ),
         ),
         const SizedBox(height: 32),
         // Cards section shimmer
-        ShimmerContainer(width: 180, height: 24),
+        const ShimmerContainer(width: 180, height: 24),
         const SizedBox(height: 16),
         Wrap(
           spacing: 16,
           runSpacing: 16,
           children: List.generate(
             20,
-            (index) => ShimmerContainer(width: 200, height: 120),
+            (index) => const ShimmerContainer(width: 200, height: 120),
           ),
         ),
       ],
