@@ -140,13 +140,17 @@ class _DeskViewState extends State<DeskView> {
           .toList();
       final isExpanded = _expandedWorkspaces.contains(workspace.name);
       final hasChildren = children.isNotEmpty;
+      final isActive = workspace.name == state.currentWorkspace;
 
       // Add workspace item
       items.add(
         Padding(
           padding: EdgeInsets.only(left: level * 20), // Increased indentation
           child: ListTile(
-            leading: const Icon(Icons.dashboard_outlined),
+            leading: Icon(
+              isActive ? Icons.dashboard : Icons.dashboard_outlined,
+              color: isActive ? theme.colorScheme.primary : null,
+            ),
             trailing: hasChildren
                 ? IconButton(
                     icon: AnimatedRotation(
@@ -165,7 +169,22 @@ class _DeskViewState extends State<DeskView> {
                     },
                   )
                 : null,
-            title: Text(workspace.label ?? 'Unknown'),
+            title: Text(
+              workspace.label ?? 'Unknown',
+              style: theme.textTheme.p?.copyWith(
+                color: isActive ? theme.colorScheme.primary : null,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+            tileColor: isActive
+                ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: isActive
+                  ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                  : BorderSide.none,
+            ),
             onTap: () {
               // Expand parent workspaces when selecting a workspace
               _expandParentWorkspaces(state, workspace.name!);
@@ -186,6 +205,7 @@ class _DeskViewState extends State<DeskView> {
               .toList();
           final childIsExpanded = _expandedWorkspaces.contains(child.name);
           final childHasChildren = childChildren.isNotEmpty;
+          final childIsActive = child.name == state.currentWorkspace;
 
           items.add(
             Padding(
@@ -210,8 +230,30 @@ class _DeskViewState extends State<DeskView> {
                           });
                         },
                       )
-                    : const Icon(Icons.dashboard_outlined),
-                title: Text(child.label ?? 'Unknown'),
+                    : Icon(
+                        childIsActive
+                            ? Icons.dashboard
+                            : Icons.dashboard_outlined,
+                        color: childIsActive ? theme.colorScheme.primary : null,
+                      ),
+                title: Text(
+                  child.label ?? 'Unknown',
+                  style: theme.textTheme.p?.copyWith(
+                    color: childIsActive ? theme.colorScheme.primary : null,
+                    fontWeight: childIsActive
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+                tileColor: childIsActive
+                    ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                    : null,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: childIsActive
+                      ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                      : BorderSide.none,
+                ),
                 onTap: () {
                   // Expand parent workspaces when selecting a child
                   _expandParentWorkspaces(state, child.name!);
@@ -227,14 +269,46 @@ class _DeskViewState extends State<DeskView> {
           // Add grandchild workspaces if expanded (limit to 2 levels for mobile)
           if (childHasChildren && childIsExpanded && level < 1) {
             for (final grandchild in childChildren) {
+              final grandchildIsActive =
+                  grandchild.name == state.currentWorkspace;
+
               items.add(
                 Padding(
                   padding: EdgeInsets.only(
                     left: (level + 2) * 20,
                   ), // Increased indentation
                   child: ListTile(
-                    leading: const Icon(Icons.dashboard_outlined),
-                    title: Text(grandchild.label ?? 'Unknown'),
+                    leading: Icon(
+                      grandchildIsActive
+                          ? Icons.dashboard
+                          : Icons.dashboard_outlined,
+                      color: grandchildIsActive
+                          ? theme.colorScheme.primary
+                          : null,
+                    ),
+                    title: Text(
+                      grandchild.label ?? 'Unknown',
+                      style: theme.textTheme.p?.copyWith(
+                        color: grandchildIsActive
+                            ? theme.colorScheme.primary
+                            : null,
+                        fontWeight: grandchildIsActive
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    tileColor: grandchildIsActive
+                        ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                        : null,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: grandchildIsActive
+                          ? BorderSide(
+                              color: theme.colorScheme.primary,
+                              width: 1,
+                            )
+                          : BorderSide.none,
+                    ),
                     onTap: () {
                       // Expand parent workspaces when selecting a grandchild
                       _expandParentWorkspaces(state, grandchild.name!);
@@ -747,7 +821,7 @@ class _DeskViewState extends State<DeskView> {
                     children: [
                       Text(
                         workspace.label?.toString() ?? 'Unknown',
-                        style: theme.textTheme.small.copyWith(
+                        style: theme.textTheme.p?.copyWith(
                           color: isActive
                               ? theme.colorScheme.primary
                               : theme.colorScheme.foreground,
