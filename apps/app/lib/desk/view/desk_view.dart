@@ -504,7 +504,7 @@ class _DeskViewState extends State<DeskView> {
                   item,
                   style: TextStyle(color: theme.colorScheme.foreground),
                 ),
-                onPressed: () {},
+                onPressed: () => _showComingSoonDialog(context),
               ),
             )
             .toList(),
@@ -535,23 +535,45 @@ class _DeskViewState extends State<DeskView> {
   }
 
   Widget _buildProfileContent(BuildContext context, ShadThemeData theme) {
+    final responsive = ResponsiveBreakpoints.of(context);
     return SizedBox(
       width: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildProfileMenuItem('My Profile', () {}, theme),
-          _buildProfileMenuItem('My Settings', () {}, theme),
-          _buildProfileMenuItem('Session Defaults', () {}, theme),
-          _buildProfileMenuItem('Reload', () {}, theme),
-          _buildProfileMenuItem('Apps', () {}, theme),
-          _buildProfileMenuItem('Toggle Full Width', () {
-            setState(() {
-              fullWidth = !fullWidth;
-              profilePopoverController.toggle();
-            });
-          }, theme),
+          _buildProfileMenuItem(
+            'My Profile',
+            () => _showComingSoonDialog(context),
+            theme,
+          ),
+          _buildProfileMenuItem(
+            'My Settings',
+            () => _showComingSoonDialog(context),
+            theme,
+          ),
+          _buildProfileMenuItem(
+            'Session Defaults',
+            () => _showComingSoonDialog(context),
+            theme,
+          ),
+          _buildProfileMenuItem(
+            'Reload',
+            () => _showComingSoonDialog(context),
+            theme,
+          ),
+          _buildProfileMenuItem(
+            'Apps',
+            () => _showComingSoonDialog(context),
+            theme,
+          ),
+          if (responsive.isDesktop)
+            _buildProfileMenuItem('Toggle Full Width', () {
+              setState(() {
+                fullWidth = !fullWidth;
+                profilePopoverController.toggle();
+              });
+            }, theme),
           _buildProfileMenuItem(
             'Toggle Theme',
             () => _showThemeDialog(context),
@@ -580,6 +602,10 @@ class _DeskViewState extends State<DeskView> {
   void _showThemeDialog(BuildContext context) {
     profilePopoverController.toggle();
     showShadDialog<void>(context: context, builder: _buildThemeDialog);
+  }
+
+  void _showComingSoonDialog(BuildContext context) {
+    showShadDialog<void>(context: context, builder: _buildComingSoonDialog);
   }
 
   Widget _buildThemeDialog(BuildContext context) {
@@ -638,6 +664,35 @@ class _DeskViewState extends State<DeskView> {
               )
               .toList(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildComingSoonDialog(BuildContext context) {
+    final theme = ShadTheme.of(context);
+
+    return ShadDialog(
+      title: const Text('Coming Soon'),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.construction,
+            size: 48,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'This feature is under development and will be available soon!',
+            style: theme.textTheme.p,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ShadButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it'),
+          ),
+        ],
       ),
     );
   }
@@ -1068,7 +1123,7 @@ class _DeskViewState extends State<DeskView> {
 
   Widget _buildShortcutCard(dynamic shortcut, ShadThemeData theme) {
     return InkWell(
-      onTap: () {},
+      onTap: () => _showComingSoonDialog(context),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -1132,9 +1187,7 @@ class _DeskViewState extends State<DeskView> {
 
   Widget _buildLinkItem(dynamic link, ShadThemeData theme) {
     return InkWell(
-      onTap: () {
-        // Handle link tap
-      },
+      onTap: () => _showComingSoonDialog(context),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Row(

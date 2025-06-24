@@ -84,7 +84,7 @@ class _SplashViewState extends State<SplashView>
                       ),
                       const SizedBox(height: 20),
                       const Text(
-                        'V0.0.1',
+                        'V0.0.2',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
