@@ -18,7 +18,14 @@ class LogoutEvent extends DeskEvent {
 
 class LoadUserDataEvent extends DeskEvent {}
 
-class LoadWorkspacesEvent extends DeskEvent {}
+class LoadWorkspacesEvent extends DeskEvent {
+  const LoadWorkspacesEvent({required this.workspace});
+
+  final String? workspace;
+
+  @override
+  List<Object?> get props => [workspace];
+}
 
 class LoadWorkspaceEvent extends DeskEvent {
   const LoadWorkspaceEvent({required this.workspaceId});

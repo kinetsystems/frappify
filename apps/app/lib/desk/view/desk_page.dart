@@ -5,7 +5,12 @@ import 'package:frappify/desk/desk.dart';
 import 'package:secure_storage/secure_storage.dart';
 
 class DeskPage extends StatelessWidget {
-  const DeskPage({super.key});
+  const DeskPage({
+    this.workspace,
+    super.key,
+  });
+
+  final String? workspace;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class DeskPage extends StatelessWidget {
               secureStorage: context.read<SecureStorage>(),
             )
             ..add(LoadUserDataEvent())
-            ..add(LoadWorkspacesEvent()),
+            ..add(LoadWorkspacesEvent(workspace: workspace)),
       child: const DeskView(),
     );
   }

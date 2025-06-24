@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frappify/apps/apps.dart';
 import 'package:frappify/desk/desk.dart';
 import 'package:frappify/settings/settings.dart';
 import 'package:frappify/utils/utils.dart';
@@ -564,7 +565,10 @@ class _DeskViewState extends State<DeskView> {
           ),
           _buildProfileMenuItem(
             'Apps',
-            () => _showComingSoonDialog(context),
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AppsPage()),
+            ),
             theme,
           ),
           if (responsive.isDesktop)

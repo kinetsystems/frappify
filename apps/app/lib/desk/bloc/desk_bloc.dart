@@ -62,7 +62,22 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
     try {
       final workspaces = await frappe.getDeskSideBarItems();
       emit(state.copyWith(workspaces: workspaces.message!.pages));
-      add(LoadWorkspaceEvent(workspaceId: workspaces.message!.pages![0].name!));
+      if (event.workspace != null) {
+        // change the workspace string to be like this, if there are - in the string convert them to space and capitalize the first letter of each word
+        final workspaceId = event.workspace!
+            .split('-')
+            .map(
+              (word) =>
+                  word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1),
+            )
+            .join(' ');
+        print('workspace_id: ${workspaceId}');
+        add(LoadWorkspaceEvent(workspaceId: workspaceId));
+      } else {
+        add(
+          LoadWorkspaceEvent(workspaceId: workspaces.message!.pages![0].name!),
+        );
+      }
     } catch (e, stack) {
       await AppLogger.reportError(e, stack, 'Failed to load workspaces');
     }
