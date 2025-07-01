@@ -9,6 +9,7 @@ import 'package:frappify/utils/constants.dart';
 import 'package:frappify/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:secure_storage/secure_storage.dart';
+import 'package:app_logger/app_logger.dart';
 
 part 'app_start_event.dart';
 part 'app_start_state.dart';
@@ -29,7 +30,11 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
         add(const StartCookieCheckUpEvent());
       } catch(e) {
         // Handle storage read failure gracefully
-        add(const StartCookieCheckUpEvent());
+        await AppLogger.reportError('Failed to read cookie from secure storage: $e');
+        // Only dispatch event if we have a valid cookie
+        if (frappe.cookie != null) {
+          add(const StartCookieCheckUpEvent());
+        }
       }
     });
   }
