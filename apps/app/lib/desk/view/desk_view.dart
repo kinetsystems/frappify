@@ -707,7 +707,6 @@ class _DeskViewState extends State<DeskView> {
     ShadThemeData theme,
     ResponsiveBreakpointsData responsive,
   ) {
-    final responsive = ResponsiveBreakpoints.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(
         !fullWidth && responsive.largerOrEqualTo(DESKTOP) ? 100 : 0,

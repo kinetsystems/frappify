@@ -23,10 +23,6 @@ class ToastService {
         // Schedule the toast to be shown after the current frame is complete
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showFunction(ctx);
-          // Remove the message from active toasts after the duration
-          Future.delayed(const Duration(seconds: 3), () {
-            _activeToasts.remove(message);
-          });
         });
       } catch (e, s) {
         AppLogger.reportError(e, s, 'ToastService._safeShowToast');
@@ -49,7 +45,7 @@ class ToastService {
       message: message,
       showFunction: (ctx) {
         toastification.show(
-          context: context,
+          context: ctx,
           alignment: Alignment.bottomRight,
           padding: const EdgeInsets.symmetric(
             vertical: 5,
@@ -66,6 +62,9 @@ class ToastService {
           showIcon: true,
           autoCloseDuration: duration,
         );
+        Future.delayed(duration, () {
+          _activeToasts.remove(message);
+        });
       },
     );
   }

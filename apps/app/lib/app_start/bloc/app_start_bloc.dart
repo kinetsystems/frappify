@@ -24,8 +24,13 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
     timer = Timer.periodic(const Duration(seconds: cookieExpCheckingIntInSec), (
       timer,
     ) async {
-      frappe.cookie = await secureStorage.read(key: 'cookie');
-      add(const StartCookieCheckUpEvent());
+      try {
+        frappe.cookie = await secureStorage.read(key: 'cookie');
+        add(const StartCookieCheckUpEvent());
+      } catch(e) {
+        // Handle storage read failure gracefully
+        add(const StartCookieCheckUpEvent());
+      }
     });
   }
 

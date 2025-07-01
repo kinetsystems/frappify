@@ -5,6 +5,7 @@ import 'package:frappify/desk/desk.dart';
 import 'package:frappify/login/login.dart';
 import 'package:frappify/onboarding/view/onboarding_page.dart';
 import 'package:frappify/splash/splash.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SplashView extends StatefulWidget {
@@ -83,9 +84,15 @@ class _SplashViewState extends State<SplashView>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        'V0.0.2',
-                        style: TextStyle(color: Colors.white),
+                      FutureBuilder<PackageInfo>(
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          final version = snapshot.data?.version ?? '';
+                          return Text(
+                            'V$version',
+                            style: const TextStyle(color: Colors.white),
+                          );
+                        },
                       ),
                     ],
                   ),

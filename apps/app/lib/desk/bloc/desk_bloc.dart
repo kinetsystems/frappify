@@ -27,16 +27,16 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
 
   Future<void> _onLogout(LogoutEvent event, Emitter<DeskState> emit) async {
     try {
-      final navigator = Navigator.of(event.context);
-
       await frappe.logout();
       await secureStorage.delete(key: 'cookie');
       await secureStorage.delete(key: 'username');
       await secureStorage.delete(key: 'userId');
 
-      navigator.pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+      if (event.context.mounted) {
+        Navigator.of(event.context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
     } catch (e, stack) {
       await AppLogger.reportError(e, stack, 'Failed to logout');
     }

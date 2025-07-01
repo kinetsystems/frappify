@@ -1,9 +1,5 @@
 name: frappify
 
-ide:
-  intellij:
-    enabled: false
-
 packages:
   - apps/*
   - packages/*
