@@ -80,7 +80,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
                 isCookieTimedOut: false,
                 isLoggedIn: true,
                 message:
-                    'Your session will in. ${formatDuration(diff.inSeconds)}',
+                  'Your session will expire in ${formatDuration(diff.inSeconds)}',
                 time: diff.inSeconds,
               ),
             );
@@ -113,14 +113,11 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
     Emitter<AppStartState> emit,
   ) async {
     timer?.cancel();
-    return;
   }
 
   @override
   Future<void> close() {
-    if (timer != null) {
-      timer!.cancel();
-    }
+    timer?.cancel();
 
     return super.close();
   }
