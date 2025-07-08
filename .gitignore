@@ -1,1 +1,4 @@
 .dart_tool/
+
+mason-lock.json
+.mason/

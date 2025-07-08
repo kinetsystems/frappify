@@ -1,0 +1,6 @@
+bricks:
+  very_good_core: ^0.11.0
+  very_good_dart_package: ^0.9.0
+  very_good_flutter_package: ^0.9.0
+  very_good_flutter_plugin: ^0.11.1
+  flutter_bloc_feature: ^0.4.0
