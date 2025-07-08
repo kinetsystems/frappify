@@ -10,11 +10,9 @@ abstract class AppStartEvent extends Equatable {
 class StartCookieCheckUpEvent extends AppStartEvent {
   const StartCookieCheckUpEvent();
 
-
   @override
   List<Object> get props => [];
 }
-
 
 class StopCookieCheckUpEvent extends AppStartEvent {
   const StopCookieCheckUpEvent();
@@ -24,9 +22,9 @@ class StopCookieCheckUpEvent extends AppStartEvent {
 }
 
 class ExpiredLogoutEvent extends AppStartEvent {
-  const ExpiredLogoutEvent(this.navigatorKey );
+  const ExpiredLogoutEvent(this.navigatorKey);
 
-  final GlobalKey<NavigatorState> navigatorKey ;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   List<Object> get props => [];

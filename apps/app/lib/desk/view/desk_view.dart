@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frappify/apps/apps.dart';
 import 'package:frappify/desk/desk.dart';
+import 'package:frappify/number_card/number_card.dart';
 import 'package:frappify/settings/settings.dart';
 import 'package:frappify/utils/utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class DeskView extends StatefulWidget {
   const DeskView({super.key});
@@ -22,7 +24,7 @@ class _DeskViewState extends State<DeskView> {
   int _selectedIndex = 0;
   bool _isSidebarOpen = true;
   final Set<String> _expandedWorkspaces = <String>{};
-  var fullWidth = false;
+  bool fullWidth = false;
 
   @override
   void initState() {
@@ -172,7 +174,7 @@ class _DeskViewState extends State<DeskView> {
                 : null,
             title: Text(
               workspace.label ?? 'Unknown',
-              style: theme.textTheme.p?.copyWith(
+              style: theme.textTheme.p.copyWith(
                 color: isActive ? theme.colorScheme.primary : null,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -183,7 +185,7 @@ class _DeskViewState extends State<DeskView> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: isActive
-                  ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                  ? BorderSide(color: theme.colorScheme.primary)
                   : BorderSide.none,
             ),
             onTap: () {
@@ -239,7 +241,7 @@ class _DeskViewState extends State<DeskView> {
                       ),
                 title: Text(
                   child.label ?? 'Unknown',
-                  style: theme.textTheme.p?.copyWith(
+                  style: theme.textTheme.p.copyWith(
                     color: childIsActive ? theme.colorScheme.primary : null,
                     fontWeight: childIsActive
                         ? FontWeight.w600
@@ -252,7 +254,7 @@ class _DeskViewState extends State<DeskView> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: childIsActive
-                      ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                      ? BorderSide(color: theme.colorScheme.primary)
                       : BorderSide.none,
                 ),
                 onTap: () {
@@ -289,7 +291,7 @@ class _DeskViewState extends State<DeskView> {
                     ),
                     title: Text(
                       grandchild.label ?? 'Unknown',
-                      style: theme.textTheme.p?.copyWith(
+                      style: theme.textTheme.p.copyWith(
                         color: grandchildIsActive
                             ? theme.colorScheme.primary
                             : null,
@@ -306,7 +308,6 @@ class _DeskViewState extends State<DeskView> {
                       side: grandchildIsActive
                           ? BorderSide(
                               color: theme.colorScheme.primary,
-                              width: 1,
                             )
                           : BorderSide.none,
                     ),
@@ -567,7 +568,7 @@ class _DeskViewState extends State<DeskView> {
             'Apps',
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AppsPage()),
+              MaterialPageRoute(builder: (context) => const AppsPage()),
             ),
             theme,
           ),
@@ -641,7 +642,7 @@ class _DeskViewState extends State<DeskView> {
                     onTap: () {
                       context.read<SettingsBloc>().add(
                         ThemeChangedEvent(
-                          themeMode: option['mode'] as ThemeMode,
+                          themeMode: option['mode']! as ThemeMode,
                         ),
                       );
                       Navigator.pop(context);
@@ -652,12 +653,12 @@ class _DeskViewState extends State<DeskView> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            option['icon'] as IconData,
+                            option['icon']! as IconData,
                             color: theme.colorScheme.primary,
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            option['name'] as String,
+                            option['name']! as String,
                             style: theme.textTheme.small,
                           ),
                         ],
@@ -839,7 +840,7 @@ class _DeskViewState extends State<DeskView> {
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: isActive
-                ? Border.all(color: theme.colorScheme.primary, width: 1)
+                ? Border.all(color: theme.colorScheme.primary)
                 : null,
           ),
           child: ShadButton.ghost(
@@ -879,7 +880,7 @@ class _DeskViewState extends State<DeskView> {
                     children: [
                       Text(
                         workspace.label?.toString() ?? 'Unknown',
-                        style: theme.textTheme.p?.copyWith(
+                        style: theme.textTheme.p.copyWith(
                           color: isActive
                               ? theme.colorScheme.primary
                               : theme.colorScheme.foreground,
@@ -996,7 +997,7 @@ class _DeskViewState extends State<DeskView> {
                 children: [
                   if (state.workspace?.charts?.items?.isNotEmpty == true)
                     _buildChartsSection(context, state, theme),
-                  if (state.numberCards?.isNotEmpty == true)
+                  if (state.workspace?.numberCards?.items?.isNotEmpty == true)
                     _buildNumberCardsSection(context, state, theme),
                   if (state.workspace?.shortcuts?.items?.isNotEmpty == true)
                     _buildShortcutsSection(context, state, theme),
@@ -1053,28 +1054,18 @@ class _DeskViewState extends State<DeskView> {
     DeskState state,
     ShadThemeData theme,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          children: (state.workspace?.numberCards?.items ?? [])
-              .asMap()
-              .entries
-              .map((entry) {
-                final index = entry.key;
-                final numberCard = entry.value;
-                final numberCardData = state.numberCards?[index];
-                return _buildNumberCardItem(
-                  numberCard.label ?? '',
-                  numberCardData?.message ?? 0.0,
-                  theme,
-                );
-              })
-              .toList(),
-        ),
-      ],
+    return ResponsiveGridList(
+      minItemWidth: 300,
+      maxItemsPerRow: 4,
+      listViewBuilderOptions: ListViewBuilderOptions(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+      ),
+      children: state.workspace!.numberCards!.items!.map((entry) {
+        return NumberCardPage(
+          name: entry.label ?? '',
+        );
+      }).toList(),
     );
   }
 

@@ -27,7 +27,6 @@ class AppsView extends StatelessWidget {
                 height: 300,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Header Section
                     _buildHeader(context),
@@ -132,11 +131,10 @@ class AppsView extends StatelessWidget {
           crossAxisCount: 3,
           crossAxisSpacing: AppSpacing.sm,
           mainAxisSpacing: AppSpacing.sm,
-          childAspectRatio: 1,
         ),
         itemCount: state.apps?.length ?? 0,
         itemBuilder: (context, index) {
-          final Message app = state.apps![index];
+          final app = state.apps![index];
           return _buildAppCard(context, app, frappe);
         },
       ),
@@ -149,21 +147,19 @@ class AppsView extends StatelessWidget {
     // Handle logo URL construction
     String? logoUrl;
     if (app.logo != null && app.logo.toString().isNotEmpty) {
-      logoUrl = '${frappe.baseUrl}${app.logo.toString()}';
+      logoUrl = '${frappe.baseUrl}${app.logo}';
     }
 
     return InkWell(
       onTap: () {
         final name = app.route!.split('/').last;
-        if (name != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DeskPage(workspace: '${name}'),
-            ),
-          );
-        }
-      },
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeskPage(workspace: name),
+          ),
+        );
+            },
       borderRadius: BorderRadius.circular(6),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xs),
@@ -176,7 +172,7 @@ class AppsView extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: theme.colorScheme.surfaceVariant,
+                color: theme.colorScheme.surfaceContainerHighest,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
@@ -243,12 +239,12 @@ class AppsView extends StatelessWidget {
             ),
           );
         },
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.logout, size: 16),
-            const SizedBox(width: AppSpacing.xs),
-            const Text('Logout'),
+            Icon(Icons.logout, size: 16),
+            SizedBox(width: AppSpacing.xs),
+            Text('Logout'),
           ],
         ),
       ),

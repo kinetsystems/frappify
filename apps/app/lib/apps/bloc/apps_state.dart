@@ -5,6 +5,13 @@ class AppsState extends Equatable {
     this.apps,
   });
 
+  factory AppsState.fromMap(Map<String, dynamic> json) => AppsState(
+    apps: json['apps'] as List<Message>?,
+  );
+
+  factory AppsState.fromJson(String json) =>
+      AppsState.fromMap(jsonDecode(json) as Map<String, dynamic>);
+
   factory AppsState.initial() => const AppsState();
 
   final List<Message>? apps;
@@ -14,13 +21,6 @@ class AppsState extends Equatable {
   }) => AppsState(
     apps: apps ?? this.apps,
   );
-
-  factory AppsState.fromMap(Map<String, dynamic> json) => AppsState(
-    apps: json['apps'] as List<Message>?,
-  );
-
-  factory AppsState.fromJson(String json) =>
-      AppsState.fromMap(jsonDecode(json) as Map<String, dynamic>);
 
   Map<String, dynamic> toMap() => {
     'apps': apps,

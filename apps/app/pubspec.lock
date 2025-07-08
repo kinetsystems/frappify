@@ -975,6 +975,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.2"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -983,6 +991,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  responsive_grid_list:
+    dependency: "direct main"
+    description:
+      name: responsive_grid_list
+      sha256: e6cd1754240795cb8b08a4520c9eb5d28856ecf71de5fe6e64535a68c0913563
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   secure_storage:
     dependency: "direct main"
     description:

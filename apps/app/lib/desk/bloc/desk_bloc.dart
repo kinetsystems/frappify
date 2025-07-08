@@ -71,7 +71,7 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
                   word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1),
             )
             .join(' ');
-        print('workspace_id: ${workspaceId}');
+        print('workspace_id: $workspaceId');
         add(LoadWorkspaceEvent(workspaceId: workspaceId));
       } else {
         add(
@@ -95,26 +95,9 @@ class DeskBloc extends Bloc<DeskEvent, DeskState> {
         DesktopPageRequest(name: event.workspaceId),
       );
 
-      final numberCards = <NumberCardResponse>[];
-
-      if (workspace.message?.numberCards?.items?.isNotEmpty == true) {
-        for (
-          var i = 0;
-          i < (workspace.message?.numberCards?.items?.length ?? 0);
-          i++
-        ) {
-          final numberCard = workspace.message?.numberCards?.items?[i];
-          final numberCardValue = await frappe.getNumberCard(
-            numberCard?.label ?? '',
-          );
-          numberCards.add(numberCardValue);
-        }
-      }
-
       emit(
         state.copyWith(
           workspace: workspace.message,
-          numberCards: numberCards,
           currentWorkspace: event.workspaceId,
           isLoadingWorkspace: false,
         ),

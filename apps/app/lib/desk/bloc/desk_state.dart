@@ -8,7 +8,6 @@ class DeskState extends Equatable {
     this.currentWorkspace,
     this.workspace,
     this.isLoadingWorkspace = false,
-    this.numberCards,
   });
 
   factory DeskState.initial() => const DeskState();
@@ -19,7 +18,6 @@ class DeskState extends Equatable {
   final String? currentWorkspace;
   final Message? workspace;
   final bool isLoadingWorkspace;
-  final List<NumberCardResponse>? numberCards;
 
   DeskState copyWith({
     String? userId,
@@ -28,7 +26,6 @@ class DeskState extends Equatable {
     String? currentWorkspace,
     Message? workspace,
     bool? isLoadingWorkspace,
-    List<NumberCardResponse>? numberCards,
   }) => DeskState(
     userId: userId ?? this.userId,
     username: username ?? this.username,
@@ -36,7 +33,6 @@ class DeskState extends Equatable {
     currentWorkspace: currentWorkspace ?? this.currentWorkspace,
     workspace: workspace ?? this.workspace,
     isLoadingWorkspace: isLoadingWorkspace ?? this.isLoadingWorkspace,
-    numberCards: numberCards ?? this.numberCards,
   );
   @override
   List<Object?> get props => [
@@ -46,6 +42,5 @@ class DeskState extends Equatable {
     currentWorkspace,
     workspace,
     isLoadingWorkspace,
-    numberCards,
   ];
 }

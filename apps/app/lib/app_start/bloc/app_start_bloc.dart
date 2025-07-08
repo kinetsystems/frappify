@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_logger/app_logger.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:frappify/utils/constants.dart';
 import 'package:frappify/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:secure_storage/secure_storage.dart';
-import 'package:app_logger/app_logger.dart';
 
 part 'app_start_event.dart';
 part 'app_start_state.dart';
@@ -28,9 +28,11 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
       try {
         frappe.cookie = await secureStorage.read(key: 'cookie');
         add(const StartCookieCheckUpEvent());
-      } catch(e) {
+      } catch (e) {
         // Handle storage read failure gracefully
-        await AppLogger.reportError('Failed to read cookie from secure storage: $e');
+        await AppLogger.reportError(
+          'Failed to read cookie from secure storage: $e',
+        );
         // Only dispatch event if we have a valid cookie
         if (frappe.cookie != null) {
           add(const StartCookieCheckUpEvent());
@@ -80,7 +82,7 @@ class AppStartBloc extends Bloc<AppStartEvent, AppStartState> {
                 isCookieTimedOut: false,
                 isLoggedIn: true,
                 message:
-                  'Your session will expire in ${formatDuration(diff.inSeconds)}',
+                    'Your session will expire in ${formatDuration(diff.inSeconds)}',
                 time: diff.inSeconds,
               ),
             );

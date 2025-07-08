@@ -11,11 +11,11 @@ class AppStartState extends Equatable {
   });
 
   factory AppStartState.initial() => const AppStartState(
-        isLoggedIn: false,
-        isCookieTimedOut: false,
-        message: '',
-        time: 0,
-      );
+    isLoggedIn: false,
+    isCookieTimedOut: false,
+    message: '',
+    time: 0,
+  );
 
   final bool isLoggedIn;
   final bool isCookieTimedOut;
@@ -30,8 +30,7 @@ class AppStartState extends Equatable {
   }) {
     return AppStartState(
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
-      isCookieTimedOut:
-          isCookieTimedOut ?? this.isCookieTimedOut,
+      isCookieTimedOut: isCookieTimedOut ?? this.isCookieTimedOut,
       message: message ?? this.message,
       time: time ?? this.time,
     );
@@ -39,9 +38,9 @@ class AppStartState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoggedIn,
-        isCookieTimedOut,
-        message,
-        time,
-      ];
+    isLoggedIn,
+    isCookieTimedOut,
+    message,
+    time,
+  ];
 }

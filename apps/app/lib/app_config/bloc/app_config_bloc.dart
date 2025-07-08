@@ -8,7 +8,6 @@ part 'app_config_event.dart';
 part 'app_config_state.dart';
 
 class AppConfigBloc extends Bloc<AppConfigEvent, AppConfigState> {
-
   AppConfigBloc({
     required this.sharedPreferences,
     required this.frappe,
