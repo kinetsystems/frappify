@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frappify/l10n/l10n.dart';
 import 'package:frappify/login/login.dart';
 import 'package:frappify/onboarding/onboarding.dart';
@@ -34,6 +35,23 @@ class _OnboardingViewState extends State<OnboardingView> {
     final theme = ShadTheme.of(context);
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
+        if (state.isLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return Center(
+                child: SpinKitWave(
+                  color: ShadTheme.of(context).colorScheme.primary,
+                ),
+              );
+            },
+          );
+        } else {
+          if (Navigator.canPop(context)) {
+            Navigator.of(context).pop();
+          }
+        }
         if (state.onboardingCompleted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute<void>(builder: (_) => const LoginPage()),

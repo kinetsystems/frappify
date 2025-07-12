@@ -13,7 +13,6 @@ class AppConfigPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AppConfigBloc(
-        sharedPreferences: context.read<SharedPreferences>(),
         secureStorage: context.read<SecureStorage>(),
         frappe: context.read<FrappeClient>(),
       ),
